@@ -1,0 +1,29 @@
+version: '1.0'
+stages:
+  - prepare
+  - build
+  - push
+steps:
+  main_clone:
+    title: Cloning main repository...
+    stage: prepare
+    type: git-clone
+    repo: 'kostis-codefresh/step-examples'
+    revision: master
+    git: github-1
+  build_jfrog_wrapper:
+    title: Building Docker image
+    stage: build
+    type: build
+    image_name: jfrog-cli
+    working_directory: './jfrog-cli-wrapper'
+    tag: latest
+  push_to_dockerhub:
+    title: Pushing to Docker hub
+    stage: push
+    type: push
+    registry: dockerhub
+    candidate: ${{build_jfrog_wrapper}}
+    tag: latest
+    image_name: kkapelon/jfrog-cli 
+     
