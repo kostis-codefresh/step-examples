@@ -1,0 +1,8 @@
+version: '1.0'
+steps:
+  run_frog_cli:
+    title: Running jfrog CLI inside Docker
+    image: kkapelon/jfrog-cli
+    commands:
+      - jfrog bt --help
+      - jfrog rt --help
