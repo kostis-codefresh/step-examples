@@ -1,0 +1,18 @@
+version: '1.0'
+steps:
+  main_clone:
+    title: Cloning main repository...
+    type: git-clone
+    repo: 'codefreshdemo/example_nodejs_postgres'
+    revision: 'master'
+    git: github    
+  read_app_version:
+    title: Reading app version
+    type: kostis-codefresh/node-version
+    arguments:
+      PACKAGE_JSON_FOLDER: './example_nodejs_postgres'
+  print_app_version:
+    title: Printing app version
+    image: alpine
+    commands:
+      - echo $APP_VERSION

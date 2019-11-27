@@ -1,0 +1,73 @@
+version: '1.0'
+kind: step-type
+metadata:
+  name: kostis-codefresh/node-version
+  isPublic: true
+  description: >-
+    The plugin exports as an environment variable the application version from package.json
+  sources:
+    - 'https://github.com/kostis-codefresh/step-examples'
+  stage: incubating
+  maintainers:
+    - name: Kostis Kapelonis
+  categories:
+    - utility
+  official: false
+  tags: []
+  icon:
+    type: svg
+    url: https://cdn.worldvectorlogo.com/logos/nodejs-icon.svg
+    background: '#f4f4f4'
+  examples:
+    - description: example-1
+      workflow:
+        version: '1.0'
+        steps:
+          main_clone:
+            title: Cloning main repository...
+            type: git-clone
+            repo: 'my-github-user/my-github-repo'
+            revision: 'master'
+            git: github 
+          read_app_version:
+            title: Reading app version
+            type: kostis-codefresh/node-version
+            arguments:
+              PACKAGE_JSON_FOLDER: './my-github-repo'
+          print_app_version:
+            title: Printing app version
+            image: alpine
+            commands:
+              - echo $APP_VERSION
+  latest: true
+  version: 1.0.0
+spec:
+  arguments: |-
+    {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": false,
+        "patterns": [],
+        "properties": {
+            "PACKAGE_JSON_FOLDER": {
+                "type": "string",
+                "description": "folder where package.json is located"
+            }
+        }
+    }
+  steps:
+    main:
+      name: kostis-codefresh/node-version
+      image: node
+      commands:
+        - cd $WORK_DIR
+        - pwd
+        - APP_VERSION=$(node -p -e "require('./package.json').version")
+        - echo $APP_VERSION
+        - export APP_VERSION
+        - cf_export APP_VERSION
+      environment:
+        - 'WORK_DIR=${{PACKAGE_JSON_FOLDER}}'
+
+
