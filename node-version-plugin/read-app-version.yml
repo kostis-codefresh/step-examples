@@ -49,6 +49,9 @@ spec:
         "type": "object",
         "additionalProperties": false,
         "patterns": [],
+        "required": [
+          "PACKAGE_JSON_FOLDER"
+        ],
         "properties": {
             "PACKAGE_JSON_FOLDER": {
                 "type": "string",
