@@ -1,45 +1,36 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 )
 
 type Coordinates struct {
-	Group    string `xml:"groupId"`
-	Artifact string `xml:"artifactId"`
-	Version  string `xml:"version"`
+	Group    string `xml:"groupId" json:"groupId"`
+	Artifact string `xml:"artifactId" json:"artifactId"`
+	Version  string `xml:"version" json:"version"`
 }
 
 func main() {
 
 	fileName := flag.String("f", "pom.xml", "filename to read")
-	showGroup := flag.Bool("group", false, "output group coordinate")
-	showApp := flag.Bool("app", false, "output application coordinate")
-	showVersion := flag.Bool("version", true, "output version coordinate")
+	useJsonOutput := flag.Bool("json", false, "format output in json")
 	flag.Parse()
 
 	coords := readCoords(*fileName)
 
-	var result strings.Builder
-	if *showGroup {
-		result.WriteString(coords.Group)
-	}
-	result.WriteString(":")
-	if *showApp {
-		result.WriteString(coords.Artifact)
-	}
-	result.WriteString(":")
-	if *showVersion {
-		result.WriteString(coords.Version)
+	if *useJsonOutput {
+		bolB, _ := json.Marshal(coords)
+		fmt.Println(string(bolB))
+	} else {
+		fmt.Printf("%s:%s:%s\n", coords.Group, coords.Artifact, coords.Version)
 	}
 
-	fmt.Println(result.String())
 }
 
 func readCoords(fileName string) Coordinates {
