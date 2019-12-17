@@ -1,0 +1,15 @@
+version: '1.0'
+steps:
+    dummy_parameters:
+      title: Creating output parameters
+      type: kostis-codefresh/output-parameters-example
+    print_app_version:
+      title: Printing app version
+      image: alpine
+      commands:
+        - echo $MY_NUMBER
+        - echo $MY_CITY
+        - echo $MY_FAVORITE_FOOD
+        - echo ${{steps.dummy_parameters.output.MY_NUMBER}}
+        - echo ${{steps.dummy_parameters.output.MY_CITY}}
+        - echo ${{steps.dummy_parameters.output.MY_FAVORITE_FOOD}}

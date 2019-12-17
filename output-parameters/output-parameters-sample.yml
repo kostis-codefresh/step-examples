@@ -1,0 +1,91 @@
+version: '1.0'
+kind: step-type
+metadata:
+  name: kostis-codefresh/output-parameters-example
+  isPublic: true
+  description: >-
+    The plugin shows how you can export output parameters
+  sources:
+    - 'https://github.com/kostis-codefresh/step-examples'
+  stage: incubating
+  maintainers:
+    - name: Kostis Kapelonis
+  categories:
+    - utility
+  official: false
+  tags: []
+  icon:
+    type: svg
+    url: https://cdn.worldvectorlogo.com/logos/bash-1.svg
+    background: '#f4f4f4'
+  examples:
+    - description: example-1
+      workflow:
+        version: '1.0'
+        steps:
+          dummy_parameters:
+            title: Creating output parameters
+            type: kostis-codefresh/output-parameters-example
+          print_my_variables:
+            title: Printing dummy content
+            image: alpine
+            commands:
+              - echo $MY_NUMBER
+              - echo $MY_CITY
+              - echo $MY_FAVORITE_FOOD
+              - echo ${{steps.dummy_parameters.output.MY_NUMBER}}
+              - echo ${{steps.dummy_parameters.output.MY_CITY}}
+              - echo ${{steps.dummy_parameters.output.MY_FAVORITE_FOOD}}
+  latest: true
+  version: 1.0.0
+spec:
+  returns: |-
+    {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": true,
+        "patterns": [],
+        "required": [
+          "MY_NUMBER",
+          "MY_CITY",
+          "MY_FAVORITE_FOOD"
+        ]
+        ,
+        "properties": {
+            "MY_NUMBER": {
+                "type": "number",
+                "description": "an example variable that holds a number"
+            },
+            "MY_CITY": {
+                "type": "object",
+                "description": "an example variable that holds a JSON object",
+                "required": ["city_name", "country", "population"],
+                "properties": {
+                    "city_name": {"type": "string"},
+                    "country": {"type": "string"},
+                    "population": {"type": "integer"}
+                }
+            },
+            "MY_FAVORITE_FOOD": {
+              "description": "an example variable that holds a number",
+              "type": "array",
+              "maxItems": 3,
+              "items": {
+                        "type": "string"
+              }
+        }
+      }
+    }    
+  steps:
+    main:
+      name: kostis-codefresh/output-parameters-example
+      image: alpine
+      commands:
+        - cf_export MY_NUMBER=42
+        - cf_export MY_CITY='{"city_name":"San Francisco", "country":"usa","population":884363}' 
+        - cf_export MY_FAVORITE_FOOD='["pizza", "ramen", "hot dogs"]'
+
+
+
+
