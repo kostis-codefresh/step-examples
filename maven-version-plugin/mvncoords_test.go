@@ -5,7 +5,7 @@ import (
 )
 
 func TestMinimalPom(t *testing.T) {
-	coords := readCoords("pom.xml")
+	coords := readCoords("testdata/pom.xml")
 	if coords.Group != "com.mycompany.app" {
 		t.Errorf("Got = %s; want com.mycompany.app", coords.Group)
 	}
@@ -18,7 +18,7 @@ func TestMinimalPom(t *testing.T) {
 }
 
 func TestRealPom(t *testing.T) {
-	coords := readCoords("pom-example1.xml")
+	coords := readCoords("testdata/pom-example1.xml")
 	if coords.Group != "com.javatpoint.application1" {
 		t.Errorf("Got = %s; want com.javatpoint.application1", coords.Group)
 	}
@@ -31,7 +31,7 @@ func TestRealPom(t *testing.T) {
 }
 
 func TestSnapshotPom(t *testing.T) {
-	coords := readCoords("pom-example2.xml")
+	coords := readCoords("testdata/pom-example2.xml")
 	if coords.Group != "com.saucelabs" {
 		t.Errorf("Got = %s; want com.saucelabs", coords.Group)
 	}
