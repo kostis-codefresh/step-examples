@@ -1,0 +1,98 @@
+version: '1.0'
+kind: step-type
+metadata:
+  name: kostis-codefresh/mvn-version
+  isPublic: true
+  description: >-
+    The plugin exports as an environment variable the mvn coordinates from pom.xml
+  sources:
+    - 'https://github.com/kostis-codefresh/step-examples'
+  stage: incubating
+  maintainers:
+    - name: Kostis Kapelonis
+  categories:
+    - utility
+  official: false
+  tags: []
+  icon:
+    type: svg
+    url: https://cdn.worldvectorlogo.com/logos/java-4.svg
+    background: '#f4f4f4'
+  examples:
+    - description: example-1
+      workflow:
+        version: '1.0'
+        steps:
+          main_clone:
+            title: Cloning main repository...
+            type: git-clone
+            repo: 'my-github-user/my-github-repo'
+            revision: 'master'
+            git: github 
+          read_app_version:
+            title: Reading app version
+            type: kostis-codefresh/mvn-version
+            arguments:
+              POM_XML_FOLDER: './my-github-repo'
+          print_app_version:
+            title: Printing app coordinates
+            image: alpine
+            commands:
+              - echo $MVN_COORDS
+              - echo ${{steps.read_app_version.output.MVN_COORDS}}
+  latest: true
+  version: 1.0.0
+spec:
+  arguments: |-
+    {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": false,
+        "patterns": [],
+        "required": [
+          "POM_XML_FOLDER"
+        ],
+        "properties": {
+            "POM_XML_FOLDER": {
+                "type": "string",
+                "description": "folder where pom.xml is located"
+            }
+        }
+    }
+  returns: |-
+    {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": true,
+        "patterns": [],
+        "required": [
+          "MVN_COORDS"
+        ],
+        "properties": {
+            "MVN_COORDS": {
+                "type": "object",
+                "required": ["groupId", "artifactId", "version"],
+                "properties": {
+                    "groupId": {"type": "string"},
+                    "artifactId": {"type": "string"},
+                    "version": {"type": "string"}
+                }
+            }
+        }
+      
+    }  
+  steps:
+    main:
+      name: kostis-codefresh/mvn-version
+      image: kkapelon/maven-version-extract
+      commands:
+        - cd $WORK_DIR
+        - MVN_COORDS=$(mvncoords -json)
+        - export MVN_COORDS
+        - cf_export MVN_COORDS
+      environment:
+        - 'WORK_DIR=${{POM_XML_FOLDER}}'
+
+
