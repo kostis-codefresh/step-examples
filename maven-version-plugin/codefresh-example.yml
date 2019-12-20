@@ -1,0 +1,19 @@
+version: '1.0'
+steps:
+  main_clone:
+    title: Cloning main repository...
+    type: git-clone
+    repo: 'codefresh-contrib/spring-boot-2-sample-app'
+    revision: 'master'
+    git: github
+  read_app_version:
+    title: Reading app version
+    type: kostis-codefresh/mvn-version
+    arguments:
+      POM_XML_FOLDER: './spring-boot-2-sample-app'
+  print_app_version:
+    title: Printing app version
+    image: alpine
+    commands:
+      - echo $MVN_COORDS
+      - echo ${{steps.read_app_version.output.MVN_COORDS}}
