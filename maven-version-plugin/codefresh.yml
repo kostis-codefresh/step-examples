@@ -1,0 +1,29 @@
+version: '1.0'
+stages:
+  - prepare
+  - build
+  - push
+steps:
+  main_clone:
+    title: Cloning main repository...
+    stage: prepare
+    type: git-clone
+    repo: 'kostis-codefresh/step-examples'
+    revision: master
+    git: github
+  build_go_image:
+    title: Building Docker image
+    stage: build
+    type: build
+    image_name: maven-version-extract
+    working_directory: './maven-version-plugin'
+    tag: latest
+  push_to_dockerhub:
+    title: Pushing to Docker hub
+    stage: push
+    type: push
+    registry: dockerhub
+    candidate: ${{build_go_image}}
+    tag: latest
+    image_name: kkapelon/maven-version-extract 
+     
