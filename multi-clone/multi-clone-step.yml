@@ -23,19 +23,17 @@ metadata:
       workflow:
         version: '1.0'
         steps:
-          dummy_parameters:
+          checkout_many_projects:
             title: Creating output parameters
-            type: kostis-codefresh/output-parameters-example
-          print_my_variables:
-            title: Printing dummy content
-            image: alpine
-            commands:
-              - echo $MY_NUMBER
-              - echo $MY_CITY
-              - echo $MY_FAVORITE_FOOD
-              - echo ${{steps.dummy_parameters.output.MY_NUMBER}}
-              - echo ${{steps.dummy_parameters.output.MY_CITY}}
-              - echo ${{steps.dummy_parameters.output.MY_FAVORITE_FOOD}}
+            type: kostis-codefresh/multi-git-clone
+            arguments:
+              GIT_REVISION: 'master'
+              GIT_PROVIDER: 'github'
+              GIT_PROJECTS: 
+                - 'codefresh-contrib/ruby-on-rails-sample-app'
+                - 'codefresh-contrib/helm-sample-app'
+                - 'kostis-codefresh/nestjs-example'
+                - 'spring-projects/spring-petclinic'
   latest: true
   version: 1.0.0
 spec:
@@ -48,9 +46,14 @@ spec:
         "patterns": [],
         "required": [
           "GIT_PROJECTS",
+          "GIT_REVISION",
           "GIT_PROVIDER"
         ],
         "properties": {
+            "GIT_REVISION": {
+                "type": "string",
+                "description": "branch or tag or revision to checkout (same for all projects)"
+            },
             "GIT_PROVIDER": {
                 "type": "string",
                 "description": "Name of git provider to use from Codefresh integrations screen"
@@ -75,14 +78,14 @@ spec:
       title: Info message
       image: alpine
       commands:
-        - echo "Checking out [[ len  .Arguments.GIT_PROJECTS ]] projects"
+        - echo "Checking out [[ len  .Arguments.GIT_PROJECTS ]] git projects"   
     [[ range $index, $git_project :=.Arguments.GIT_PROJECTS ]]
     clone_project_[[$index]]:
       title: Cloning [[$git_project]] ...
       type: git-clone
       repo: '[[$git_project]]'
-      revision: 'master'
-      git: github-1
+      revision: [[$.Arguments.GIT_REVISION]]
+      git: [[$.Arguments.GIT_PROVIDER]]
     [[end]]          
     change_my_workdir:
         image: alpine
