@@ -4,7 +4,7 @@ metadata:
   name: kostis-codefresh/multi-git-clone
   isPublic: true
   description: >-
-    The plugin shows templating of custom steps
+    This pipeline plugin shows templating of custom steps
   sources:
     - 'https://github.com/kostis-codefresh/step-examples'
   stage: incubating
@@ -24,14 +24,14 @@ metadata:
         version: '1.0'
         steps:
           checkout_many_projects:
-            title: Creating output parameters
+            title: Checking out my Git projects
             type: kostis-codefresh/multi-git-clone
             arguments:
               GIT_REVISION: 'master'
               GIT_PROVIDER: 'github'
               GIT_PROJECTS: 
                 - 'codefresh-contrib/ruby-on-rails-sample-app'
-                - 'codefresh-contrib/helm-sample-app'
+                - 'kubernetes/sample-apiserver'
                 - 'kostis-codefresh/nestjs-example'
                 - 'spring-projects/spring-petclinic'
   latest: true
@@ -59,7 +59,7 @@ spec:
                 "description": "Name of git provider to use from Codefresh integrations screen"
             },
             "GIT_PROJECTS": {
-              "description": "a list/array of git projects to checkout",
+              "description": "A list/array of git projects to checkout",
               "type": "array",
               "maxItems": 10,
               "items": {
@@ -87,18 +87,9 @@ spec:
       revision: [[$.Arguments.GIT_REVISION]]
       git: [[$.Arguments.GIT_PROVIDER]]
     [[end]]          
-    change_my_workdir:
-        image: alpine
-        commands:
-        [[ if .Arguments.REVISION2 ]]
-            - echo "we don't have revision"
-        [[- end -]]    
-        [[ if .Arguments.REVISION ]]
-            - echo "we have revision"
-        [[- end -]] 
-        [[ range $index, $git_project :=.Arguments.GIT_PROJECTS ]]
-            - echo [[$git_project]]
-        [[- end -]] 
+
+
+
 
 
 

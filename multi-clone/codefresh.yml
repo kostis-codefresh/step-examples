@@ -1,0 +1,19 @@
+version: '1.0'
+steps:
+    checkout_many_projects:
+      title: Checking out my Git projects
+      type: kostis-codefresh/multi-git-clone
+      arguments:
+        GIT_REVISION: 'master'
+        GIT_PROVIDER: 'github'
+        GIT_PROJECTS: 
+          - 'codefresh-contrib/ruby-on-rails-sample-app'
+          - 'kubernetes/sample-apiserver'
+          - 'kostis-codefresh/nestjs-example'
+          - 'spring-projects/spring-petclinic'
+    print_app_version:
+      title: Printing app version
+      image: alpine
+      commands:
+        - ls -l
+        - pwd
