@@ -1,0 +1,104 @@
+version: '1.0'
+kind: step-type
+metadata:
+  name: kostis-codefresh/multi-git-clone
+  isPublic: true
+  description: >-
+    The plugin shows templating of custom steps
+  sources:
+    - 'https://github.com/kostis-codefresh/step-examples'
+  stage: incubating
+  maintainers:
+    - name: Kostis Kapelonis
+  categories:
+    - git
+  official: false
+  tags: []
+  icon:
+    type: svg
+    url: https://cdn.worldvectorlogo.com/logos/git.svg
+    background: '#f4f4f4'
+  examples:
+    - description: example-1
+      workflow:
+        version: '1.0'
+        steps:
+          dummy_parameters:
+            title: Creating output parameters
+            type: kostis-codefresh/output-parameters-example
+          print_my_variables:
+            title: Printing dummy content
+            image: alpine
+            commands:
+              - echo $MY_NUMBER
+              - echo $MY_CITY
+              - echo $MY_FAVORITE_FOOD
+              - echo ${{steps.dummy_parameters.output.MY_NUMBER}}
+              - echo ${{steps.dummy_parameters.output.MY_CITY}}
+              - echo ${{steps.dummy_parameters.output.MY_FAVORITE_FOOD}}
+  latest: true
+  version: 1.0.0
+spec:
+  arguments: |-
+    {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": false,
+        "patterns": [],
+        "required": [
+          "GIT_PROJECTS",
+          "GIT_PROVIDER"
+        ],
+        "properties": {
+            "GIT_PROVIDER": {
+                "type": "string",
+                "description": "Name of git provider to use from Codefresh integrations screen"
+            },
+            "GIT_PROJECTS": {
+              "description": "a list/array of git projects to checkout",
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                        "type": "string"
+                        }
+            }
+            
+        }
+    }
+  delimiters:
+    left: '[['
+    right: ']]'
+  stepsTemplate: |-
+    print_info_message:
+      name: kostis-codefresh/multi-git-clone
+      title: Info message
+      image: alpine
+      commands:
+        - echo "Checking out [[ len  .Arguments.GIT_PROJECTS ]] projects"
+    [[ range $index, $git_project :=.Arguments.GIT_PROJECTS ]]
+    clone_project_[[$index]]:
+      title: Cloning [[$git_project]] ...
+      type: git-clone
+      repo: '[[$git_project]]'
+      revision: 'master'
+      git: github-1
+    [[end]]          
+    change_my_workdir:
+        image: alpine
+        commands:
+        [[ if .Arguments.REVISION2 ]]
+            - echo "we don't have revision"
+        [[- end -]]    
+        [[ if .Arguments.REVISION ]]
+            - echo "we have revision"
+        [[- end -]] 
+        [[ range $index, $git_project :=.Arguments.GIT_PROJECTS ]]
+            - echo [[$git_project]]
+        [[- end -]] 
+
+
+
+
+
+
