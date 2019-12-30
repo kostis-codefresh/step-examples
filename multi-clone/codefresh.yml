@@ -11,8 +11,8 @@ steps:
           - 'kubernetes/sample-apiserver'
           - 'kostis-codefresh/nestjs-example'
           - 'spring-projects/spring-petclinic'
-    print_app_version:
-      title: Printing app version
+    print_my_workspace:
+      title: Show projects
       image: alpine
       commands:
         - ls -l
